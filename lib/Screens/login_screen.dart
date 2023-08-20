@@ -1,9 +1,11 @@
+// import 'dart:js';
 
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:note_app_flutter/Screens/homeScreen.dart';
 import 'package:note_app_flutter/Screens/ResetPassword.dart';
 import 'package:note_app_flutter/Screens/reusable_widget.dart';
+import 'package:note_app_flutter/Screens/signupScreen.dart';
 
 import '../Screens/color.dart';
 // import 'color.dart';
@@ -27,10 +29,10 @@ class _loginState extends State<login> {
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              hexStringToColor("CB2B93"),
-              hexStringToColor("9546C4"),
-              hexStringToColor("5E61F4")
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          hexStringToColor("CB2B93"),
+          hexStringToColor("9546C4"),
+          hexStringToColor("5E61F4")
+        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.fromLTRB(
@@ -41,7 +43,7 @@ class _loginState extends State<login> {
                 const SizedBox(
                   height: 30,
                 ),
-                reusableTextField("Enter UserName", Icons.person_outline, false,
+                reusableTextField("Enter Email", Icons.person_outline, false,
                     _emailTextController),
                 const SizedBox(
                   height: 20,
@@ -53,13 +55,49 @@ class _loginState extends State<login> {
                 ),
                 forgetPassword(context),
                 firebaseUIButton(context, "Log In", () {
-                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                      return homeScreen();
-                    }));
-
-                  // on pressed
+                  FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: _emailTextController.text,
+                          password: _passwordTextController.text)
+                      .then((value) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => homeScreen()));
+                  }).onError((error, stackTrace) {
+                    print("Error ${error.toString()}");
+                  });
                 }),
-                signUpOption()
+
+                // on pressed
+
+                // signUpOption()
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Don't have account?",
+                  style: TextStyle(color: Colors.white70)),
+                    GestureDetector(
+                         onTap: (){
+                           Navigator.push(context,
+                               MaterialPageRoute(builder: (context) => SignupScreen()));
+
+                         },
+                      child: const Text(
+                        " Sign Up",
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                       ),
+
+
+                  ],
+                )
+               // Text('Signup'),
+               //  GestureDetector(
+               //    onTap: (){
+               //      Navigator.push(context,
+               //          MaterialPageRoute(builder: (context) => SignupScreen()));
+               //    },
+               //  )
+
               ],
             ),
           ),
@@ -69,27 +107,26 @@ class _loginState extends State<login> {
   }
 }
 
-Row signUpOption() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      const Text("Don't have account?",
-          style: TextStyle(color: Colors.white70)),
-      GestureDetector(
-        onTap: () {  // problem
-          // Navigator.push(context as BuildContext,
-          //     MaterialPageRoute(builder: (context) => homeScreen()));
-        },
-
-
-        child: const Text(
-          " Sign Up",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-      )
-    ],
-  );
-}
+// Row signUpOption() {
+//   return Row(
+//     mainAxisAlignment: MainAxisAlignment.center,
+//     children: [
+//       const Text("Don't have account?",
+//           style: TextStyle(color: Colors.white70)),
+//       GestureDetector(
+//         onTap: () {
+//
+//           // Navigator.push(
+//           //     MaterialPageRoute(builder: (context) => SignupScreen()) as BuildContext);
+//         },
+//         child: const Text(
+//           " Sign Up",
+//           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+//         ),
+//       )
+//     ],
+//   );
+// }
 
 Widget forgetPassword(BuildContext context) {
   return Container(

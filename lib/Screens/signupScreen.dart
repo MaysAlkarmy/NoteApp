@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:note_app_flutter/Screens/homeScreen.dart';
 import 'package:note_app_flutter/Screens/color.dart';
@@ -74,17 +76,17 @@ class _SignupScreenState extends State<SignupScreen> { //2
                     ),
                     firebaseUIButton(context, "Sign Up", () {
 
-                      // FirebaseAuth.instance
-                      //     .createUserWithEmailAndPassword(
-                      //     email: _emailTextController.text,
-                      //     password: _passwordTextController.text)
-                      //     .then((value) {
-                      //   print("Created New Account");
-                      //   Navigator.push(context,
-                      //       MaterialPageRoute(builder: (context) => HomeScreen()));
-                      // }).onError((error, stackTrace) {
-                      //   print("Error ${error.toString()}");
-                      // });
+                      FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                          email: _emailTextController.text,
+                          password: _passwordTextController.text)
+                          .then((value) {
+                        print("Created New Account");
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => homeScreen()));
+                      }).onError((error, stackTrace) {
+                        print("Error ${error.toString()}");
+                      });
                     })
 
                   ],
